@@ -1,0 +1,63 @@
+STRINGS.NAMES.BOT2HM = {}
+if TUNING.isCh2hm then
+    STRINGS.NAMES.BOT2HM.ACTIVEWORD = "千影千影"
+    STRINGS.NAMES.BOT2HM.HELP = "帮助"
+    STRINGS.NAMES.BOT2HM.CODECANUSE = "指令:"
+    STRINGS.NAMES.BOT2HM.IMHERE = "我在"
+
+    STRINGS.NAMES.BOT2HM.TRY_PAUSE = "发起暂停"
+    STRINGS.NAMES.BOT2HM.TRY_RESUME = "发起继续"
+    STRINGS.NAMES.BOT2HM.VOTE_AGREE = "同意"
+    STRINGS.NAMES.BOT2HM.VOTE_NEGATIVE = "反对"
+    STRINGS.NAMES.BOT2HM.VOTE_PASSED = "投票通过"
+    STRINGS.NAMES.BOT2HM.VOTE_FAILED = "投票未通过"
+    STRINGS.NAMES.BOT2HM.VOTE_TXT = "票数 {agree}/{total}"
+
+    STRINGS.UI.BUILTINCOMMANDS.SERVERPAUSED2HM = {}
+    STRINGS.UI.BUILTINCOMMANDS.SERVERPAUSED2HM.PRETTYNAME = "暂停/继续"
+    STRINGS.UI.BUILTINCOMMANDS.SERVERPAUSED2HM.DESC = "切换服务器暂停/继续状态"
+    STRINGS.UI.BUILTINCOMMANDS.SERVERPAUSED2HM.VOTETITLEFMT = "我们该暂停/继续吗？"
+    STRINGS.UI.BUILTINCOMMANDS.SERVERPAUSED2HM.VOTENAMEFMT = "投票选择暂停/继续"
+    STRINGS.UI.BUILTINCOMMANDS.SERVERPAUSED2HM.VOTEPASSEDFMT = "服务器执行暂停/继续"
+else
+    STRINGS.NAMES.BOT2HM.ACTIVEWORD = "QianYingQianYing"
+    STRINGS.NAMES.BOT2HM.HELP = "Help"
+    STRINGS.NAMES.BOT2HM.CODECANUSE = "Commands:"
+    STRINGS.NAMES.BOT2HM.IMHERE = "I'm here"
+
+    STRINGS.NAMES.BOT2HM.TRY_PAUSE = "try pause game"
+    STRINGS.NAMES.BOT2HM.TRY_RESUME = "try resume game"
+    STRINGS.NAMES.BOT2HM.VOTE = "vote for agree"
+    STRINGS.NAMES.BOT2HM.VOTE_NEGATIVE = "vote for negative"
+    STRINGS.NAMES.BOT2HM.VOTE_PASSED = "vote passed"
+    STRINGS.NAMES.BOT2HM.VOTE_FAILED = "vote not passed"
+    STRINGS.NAMES.BOT2HM.VOTE_TXT = "vote {agree}/{total}"
+
+    STRINGS.UI.BUILTINCOMMANDS.SERVERPAUSED2HM = {}
+    STRINGS.UI.BUILTINCOMMANDS.SERVERPAUSED2HM.PRETTYNAME = "pause/resume"
+    STRINGS.UI.BUILTINCOMMANDS.SERVERPAUSED2HM.DESC = "server pause/resume"
+    STRINGS.UI.BUILTINCOMMANDS.SERVERPAUSED2HM.VOTETITLEFMT = "should pause/resume ?"
+    STRINGS.UI.BUILTINCOMMANDS.SERVERPAUSED2HM.VOTENAMEFMT = "vote for pause/resume"
+    STRINGS.UI.BUILTINCOMMANDS.SERVERPAUSED2HM.VOTEPASSEDFMT = "server pause/resume"
+end
+
+-- 探测杖
+if TUNING.isCh2hm then
+    STRINGS.NAMES.DIVININGROD2HM = "发条探测杖"
+    STRINGS.CHARACTERS.GENERIC.DESCRIBE.DIVININGROD2HM = {
+        HOT = "它们就在附近！",
+        WARMER = "信号越来越强了！",
+        WARM = "能感应到发条生物的气息...",
+        COLD = "微弱的信号，它们离得很远。",
+        GENERIC = "用来探测齿轮生物的神奇装置。",
+    }
+else
+    STRINGS.NAMES.DIVININGROD2HM = "Clockwork Divining Rod"
+    STRINGS.CHARACTERS.GENERIC.DESCRIBE.DIVININGROD2HM = {
+        HOT = "It's so close! A clockwork is right here!",
+        WARMER = "The signal is getting stronger!",
+        WARM = "I can sense a clockwork presence...",
+        COLD = "A faint signal, they're far away.",
+        GENERIC = "A magical device for detecting clockwork creatures.",
+    }
+end

@@ -1,0 +1,152 @@
+local L = locale ~= "zh" and locale ~= "zhr"
+
+name = L and "Fast Travel Skined(teleportation sign)" or "木牌传送（皮肤版）"
+
+version = "1.5.5"                   --功能.物品数.增加物品后的修改次数
+
+description =  L and '〔MoonBook〕V. ' .. version .. '\n' ..[[
+
+A teleportation sign can help you to fast skintravel. 
+
+SkinTravel cost hunger. The sign made of 1 wood board, and you can find it in light/mod/deco tab.
+
+DST home sign can do fast skintravel as well. you could turn it on at setting menu. 
+
+DON'T use with other fast skintravel mod at the same time. 
+]]
+
+ or '〔望月〕V. ' .. version .. '\n' ..[[
+
+乘风好去，长空万里，直下看山河。 一键传送你！
+
+游戏自带木牌也支持传送功能，默认关闭。
+
+请不要与其他具备木牌传送功能的模组一起使用,否则可能冲突！
+]]
+
+
+author = "天涯，小花朵，Isosurface"                      --作者
+api_version = 10                     --mod的API版本,联机版固定为10，单机版为6
+forumthread = ""                     --mod链接网址,即使没有也必须留空,为空时默认为工坊链接
+priority = 0                         --mod加载的优先级,不写就默认为0,负号后面越大越优先加载,优先加载的会被覆盖
+
+icon = "modicon.tex"                 --mod图标文件
+icon_atlas = "modicon.xml"           --mod图标文件
+
+server_filter_tags = {"Fast skintravel","teleportation","resurrection","传送","木牌","复活"}        --mod标签
+
+dst_compatible = true                --判定是否兼容 联机版:    兼容
+dont_starve_compatible = false       --判定是否兼容 单机:      不兼容
+shipwrecked_compatible = false       --判定是否兼容 海难:      不兼容
+reign_of_giants_compatible = false   --判定是否兼容 巨人:      不兼容s  
+hamlet_compatible = false            --判定是否兼容 哈姆雷特:  不兼容
+all_clients_require_mod = true       --服务器mod判定: 是
+
+
+local function addConfig(name, ch_label, en_label, default, ch_hover, en_hover)
+	return {
+		name = name,
+		label = L and en_label or ch_label,
+		hover = L and en_hover or ch_hover,
+		options = 
+		{	
+			{description = L and "On" or "开启", data = true},
+			{description = L and "Off" or "禁用", data = false},
+		},
+		default = default,
+	}
+end
+
+
+
+configuration_options =
+{
+	{
+		name = "CH_LANG",
+		label = "语言(Language)",
+		options =
+		{
+			{description = "中文", data = true},
+			{description = "English", data = false},
+		},
+		default = L and false or true,
+	},
+	{
+		name = "HomesignEnable",
+		label = L and "DST home sign" or "原版木牌可传送",
+		hover = L and "DST home sign can do fast skintravel as well." or "原版木牌也可以快速传送",
+		options = 
+		{	
+			{description = L and "Yes! Lets do it ！󰀐" or "开启󰀐", data = true},
+			{description = L and "No!Keep original!󰀤" or "关闭󰀤", data = false},
+		},
+		default = false,
+	},
+	{
+		name = "LightEnable",
+		label = L and "lighting" or "传送木牌可发光",
+		options = 
+		{	
+			{description = L and "Yes! Lets do it ！󰀐" or "开启󰀐", data = true},
+			{description = L and "No!Keep original!󰀤" or "关闭󰀤", data = false},
+		},
+		default = true,
+	},
+	{
+		name = "ResurrectEnable",
+		label = L and "revivalable" or "作祟木牌可复活",
+		options = 
+		{	
+			{description = L and "Yes! Lets do it ！󰀐" or "开启󰀐", data = true},
+			{description = L and "No!Keep original!󰀤" or "关闭󰀤", data = false},
+		},
+		default = true,
+	},
+    {
+        name = "HungerCost",
+        label = L and "hunger cost" or "饥饿值消耗倍数",
+        options = {
+            {description = L and "0" or "无消耗", data = 0},
+            {description = "X0.25", data = 0.25},
+            {description = "X1.0", data = 1},
+			{description = "X2.0", data = 2},
+            {description = "X4.0", data = 4},
+			{description = "X8.0", data = 8},
+        },
+        default = 1,
+    },
+	{
+        name = "SanityCost",
+        label = L and "sanity cost" or "理智值消耗倍数",
+        options = {
+            {description = L and "0" or "无消耗", data = 0},
+            {description = "X0.25", data = 0.25},
+            {description = "X1.0", data = 1},
+			{description = "X2.0", data = 2},
+            {description = "X4.0", data = 4},
+			{description = "X8.0", data = 8},
+        },
+        default = 1,
+    },
+	
+	{
+        name = "CountdownEnable",
+        label = L and "Teleportation Countdown allowed" or "传送等待倒计时",
+        options = 
+		{	
+			{description = L and "Turn on" or "开启󰀐", data = true},
+			{description = L and "Turn off" or "关闭󰀤", data = false},
+		},
+        default = false,
+    },
+
+	{
+        name = "TextEnable",
+        label = L and "Show sign's name" or "显示木牌名字",
+        options = {
+			{description = L and "Show" or "显示󰀐", data = true},
+            {description = L and "Hide" or "隐藏󰀐", data = false},
+        },
+        default = false,
+	}
+}

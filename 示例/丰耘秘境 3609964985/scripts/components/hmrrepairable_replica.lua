@@ -1,0 +1,6 @@
+local HStatueDisplayer = Class(function(self, inst)
+    self.inst = inst
+
+end)
+
+return HStatueDisplayer

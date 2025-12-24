@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Atlas>
+    <Texture filename="terrorbeak2hm.tex"/>
+    <Elements>
+        <Element name="terrorbeak2hm.tex" u1="0.00390625" u2="0.996094" v1="0.00390625" v2="0.996094"/>
+    </Elements>
+    <StraightAlpha>false</StraightAlpha>
+</Atlas>
+

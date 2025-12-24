@@ -1,0 +1,13 @@
+--------------------------------
+--[[ 全局变量]]
+--[[ @author: 谅直]]
+--[[ @createTime: 2022-02-14]]
+--[[ @updateTime: 2022-02-14]]
+--[[ @email: x7430657@163.com]]
+--------------------------------
+-- TODO 待完善,目前守护实体不起作用
+-- 原本的目的:是作为全局后台共享实体,用来保存或传输数据
+-- 但未实现,暂时采用了绑定在network的形式,但存在兼容问题,未来如果有新增network或者没用到
+-- 我所绑定的network(forest/cave_network),直接GG
+--GLOBAL.DAEMON_ENTITY = GLOBAL.SpawnPrefab(TUNING.DORAEMON_TECH.DAEMON_ENTITY_PREFAB)
+

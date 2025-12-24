@@ -1,0 +1,259 @@
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--[[
+
+    压缩JSON数据
+    通过密码表来替换压缩字符串。
+
+    【注意】压缩和解压要同一个密码表。
+    
+    更新密码表使用 的示例：
+            -- local data = TBAT.ClientSideData:PlayerGet("unlocked_skins") or {}
+            -- -- print(json_compressor.generate_common_strings(data))
+
+    
+
+
+
+]]--
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----
+
+            local json_compressor = {}
+
+            -- 常用字符串列表，可通过generate_common_strings函数自动生成建议
+             local common_strings = {	
+                "tbat_",	
+                "bat_",	
+                "tbat",	
+                "tbat_eq_",	
+                "tbat_eq_universal_baton",	
+                "tbat_building_",
+            }	
+
+            -- 创建字符串到ID的映射
+            local str_to_id = {}
+            for i, str in ipairs(common_strings) do
+                str_to_id[str] = i
+            end
+            --------------------------------------------------
+            -- 根据物品图标文件名、小地图图标文件名来压缩索引
+                local current_id = #common_strings
+                for i, str in ipairs(TBAT:GetAllInventoryImageFileNames()) do
+                    current_id = current_id + 1
+                    str_to_id[str] = current_id
+                end
+                for i, str in ipairs(TBAT:GetAllMapIconFileNames()) do
+                    current_id = current_id + 1
+                    str_to_id[str] = current_id
+                end
+            --------------------------------------------------
+
+            -- 辅助函数：递归收集table中的所有字符串
+            local function collect_strings(t, strings)
+                strings = strings or {}
+                if type(t) == "table" then
+                    -- 收集键
+                    for k, v in pairs(t) do
+                        if type(k) == "string" then
+                            table.insert(strings, k)
+                        end
+                        -- 递归处理值
+                        collect_strings(v, strings)
+                    end
+                elseif type(t) == "string" then
+                    table.insert(strings, t)
+                end
+                return strings
+            end
+
+            -- 辅助函数：提取字符串的所有可能子串（长度>=3）
+            local function get_substrings(str)
+                local subs = {}
+                local len = #str
+                -- 只考虑长度至少为3的子串，太短的压缩效益低
+                for l = 3, len do
+                    for i = 1, len - l + 1 do
+                        local sub = str:sub(i, i + l - 1)
+                        table.insert(subs, sub)
+                    end
+                end
+                return subs
+            end
+
+            -- 新API：生成建议的常用字符串列表
+            function json_compressor.generate_common_strings(data, max_count)
+                max_count = max_count or 20  -- 默认最多生成20个
+                local strings = collect_strings(data)
+                local sub_counts = {}
+                
+                -- 统计所有子串出现的次数
+                for _, str in ipairs(strings) do
+                    local subs = get_substrings(str)
+                    for _, sub in ipairs(subs) do
+                        sub_counts[sub] = (sub_counts[sub] or 0) + 1
+                    end
+                end
+                
+                -- 转换为数组并排序：优先按出现次数，其次按长度
+                local sorted_subs = {}
+                for sub, count in pairs(sub_counts) do
+                    table.insert(sorted_subs, {
+                        str = sub,
+                        count = count,
+                        length = #sub
+                    })
+                end
+                
+                -- 排序规则：出现次数多的优先，相同次数下长字符串优先
+                table.sort(sorted_subs, function(a, b)
+                    if a.count ~= b.count then
+                        return a.count > b.count
+                    end
+                    return a.length > b.length
+                end)
+                
+                -- 提取结果并去重
+                local result = {}
+                local seen = {}
+                for i, item in ipairs(sorted_subs) do
+                    if i > max_count then break end
+                    if not seen[item.str] then
+                        seen[item.str] = true
+                        table.insert(result, item.str)
+                    end
+                end
+                
+                -- 打印结果，格式适合直接复制到代码中
+                print("建议的common_strings列表：")
+                print("local common_strings = {")
+                for _, str in ipairs(result) do
+                    print(string.format('    "%s",', str))
+                end
+                print("}")
+                
+                return result
+            end
+
+            -- 压缩函数
+            function json_compressor.compress(str)
+                -- 第一步：替换true和false为特殊符号
+                local temp = string.gsub(str, "true", "@")
+                temp = string.gsub(temp, "false", "%%")  -- 使用%%转义%符号
+                
+                -- 第二步：替换常用字符串（按长度排序，避免短字符串先被替换）
+                local sorted_strings = {}
+                for _, s in ipairs(common_strings) do
+                    table.insert(sorted_strings, s)
+                end
+                table.sort(sorted_strings, function(a, b) return #a > #b end)
+                
+                for _, s in ipairs(sorted_strings) do
+                    local id = str_to_id[s]
+                    temp = string.gsub(temp, s, "⌂" .. id .. "⌂")
+                end
+                
+                -- 第三步：压缩连续重复的字符（2次以上就压缩）
+                local i = 1
+                local compressed = {}
+                while i <= #temp do
+                    local current_char = temp:sub(i, i)
+                    
+                    -- 处理特殊标记
+                    if current_char == "⌂" then
+                        local j = i + 1
+                        while j <= #temp and temp:sub(j, j) ~= "⌂" do
+                            j = j + 1
+                        end
+                        table.insert(compressed, temp:sub(i, j))
+                        i = j + 1
+                    else
+                        -- 统计连续相同字符
+                        local count = 1
+                        local j = i + 1
+                        while j <= #temp and temp:sub(j, j) == current_char do
+                            count = count + 1
+                            j = j + 1
+                        end
+                        
+                        -- 2次以上就压缩
+                        if count >= 2 then
+                            table.insert(compressed, "∑" .. count .. current_char .. "∑")
+                        else
+                            table.insert(compressed, current_char)
+                        end
+                        
+                        i = j
+                    end
+                end
+                
+                -- 第四步：对JSON引号进行特殊处理
+                local result = table.concat(compressed)
+                result = string.gsub(result, "\"", "¦")  -- 用¦替代引号
+                
+                return result
+            end
+
+            -- 解压函数
+            function json_compressor.decompress(str)
+                -- 第一步：还原引号
+                local temp = string.gsub(str, "¦", "\"")
+                
+                -- 第二步：还原连续重复字符
+                temp = string.gsub(temp, "∑(%d+)(.)∑", function(count, char)
+                    return char:rep(tonumber(count))
+                end)
+                
+                -- 第三步：还原常用字符串
+                temp = string.gsub(temp, "⌂(%d+)⌂", function(id)
+                    return common_strings[tonumber(id)] or ("⌂" .. id .. "⌂")
+                end)
+                
+                -- 第四步：还原true和false
+                temp = string.gsub(temp, "@", "true")
+                temp = string.gsub(temp, "%%", "false")
+                
+                return temp
+            end
+
+
+
+
+
+            -- local data = TBAT.ClientSideData:PlayerGet("unlocked_skins") or {}
+
+            -- -- print(json_compressor.generate_common_strings(data))
+
+
+            -- local str = json.encode(data)
+            -- print("origin",#str,str)
+            -- str = json_compressor.compress(str)
+            -- print("zip",#str,str)
+            -- str = json_compressor.decompress(str)
+            -- print("unzip",#str,str)
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---
+    function TBAT.FNS:ZipDebugUpdate(input_data)
+        local data = input_data or TBAT.ClientSideData:PlayerGet("unlocked_skins") or {}
+        print(json_compressor.generate_common_strings(data))
+    end
+    function TBAT.FNS:ZipPrintDictionary()
+        for k,v in pairs(str_to_id) do
+            print(k,v)
+        end
+    end
+    function TBAT.FNS:ZipJsonStr(str)
+        local origin_lengh = #str
+        local new_str = json_compressor.compress(str)
+        local new_lengh = #new_str
+        --- 压缩比
+        if TBAT.DEBUGGING and origin_lengh > 0 and new_lengh > 0 then
+            print("TBAT.FNS:ZipJsonStr origin",origin_lengh,"new",new_lengh,"compress",new_lengh/origin_lengh)
+            print("++ origin",str)
+            print("new",new_str)
+        end
+        return new_str
+    end
+    function TBAT.FNS:UnzipJsonStr(str)
+        return json_compressor.decompress(str)
+    end
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

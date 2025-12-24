@@ -1,0 +1,7 @@
+
+local Sofa = Class(function(self, inst)
+	self.inst = inst
+
+end)
+
+return Sofa

@@ -1,0 +1,1 @@
+TUNING.ATBOOK_NUMRECIPEPAGE = tonumber(GetModConfigData("atbook_numrecipepage") or 5)

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Atlas>
+    <Texture filename="nightberrymosse2hm.tex"/>
+    <Elements>
+        <Element name="nightberrymosse2hm.tex" u1="0.0078125" u2="0.992188" v1="0.0078125" v2="0.992188"/>
+    </Elements>
+    <StraightAlpha>false</StraightAlpha>
+</Atlas>
+
